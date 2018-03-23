@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="Unscramble Me:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/Unscramble_Me_jar</output-path>
+    <root id="archive" name="Unscramble Me.jar">
+      <element id="module-output" name="Unscramble Me" />
+    </root>
+  </artifact>
+</component>
