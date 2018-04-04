@@ -7,8 +7,9 @@ import java.net.Socket;
 * This class is responsible to read messages from the client and send it to the server.
 * */
 public class ClientWriteThread extends Thread {
-    // object to write messages to the server
+    // Reference to write messages to the server
     private PrintWriter writer;
+    // Reference used to retrieve the server output stream
     private Socket serverSocket;
     private GameClient gameClient;
 
@@ -17,6 +18,7 @@ public class ClientWriteThread extends Thread {
         this.gameClient = client;
 
         try {
+            // Trying to retrieve the server output stream used to send messages to the sever
             OutputStream output = serverSocket.getOutputStream();
             writer = new PrintWriter(output, true);
         } catch (IOException ex) {
@@ -31,6 +33,7 @@ public class ClientWriteThread extends Thread {
         System.out.print("Welcome! Enter your username: ");
         String userName = null;
         try {
+            // Waiting for user to type a message
             userName = reader.readLine();
         } catch (IOException e) {
             e.printStackTrace();
