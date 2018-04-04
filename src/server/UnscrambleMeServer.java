@@ -8,9 +8,15 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * This class is responsible to start the game server, accept new connections and manage connected users.
+ */
 public class UnscrambleMeServer {
+    // Virtual port number
     private int port;
+    // Set of connected users
     private Set<String> userNames = new HashSet<>();
+    // Set of connected users threads
     private Set<UserThread> userThreads = new HashSet<>();
 
     public UnscrambleMeServer (int port) {
@@ -18,14 +24,16 @@ public class UnscrambleMeServer {
     }
 
     public void start () {
+        // Try to start the server
         try (ServerSocket serverSocket = new ServerSocket(port)) {
 
+            // Connection sucessfull
             System.out.println("Game Server is listening on port " + port);
             boolean done = true;
 
             while (done) {
+                // Wait for new connections
                 Socket socket = serverSocket.accept();
-                // TODO show user connection log
                 Logger.getAnonymousLogger().log(Level.INFO, "New user connected");
 
                 UserThread newUser = new UserThread(socket, this);
@@ -36,6 +44,7 @@ public class UnscrambleMeServer {
             System.out.println("\nDisconnecting...");
 
         } catch (IOException ex) {
+            // Failed on starting the server
             System.out.println("Error in the server: " + ex.getMessage());
             ex.printStackTrace();
         }
