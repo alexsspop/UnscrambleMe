@@ -12,8 +12,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class GameClient {
+    // The server hostname used to establish the connection
     private String serverHostname;
+    // The port used in connection
     private int port;
+    // The given client username
     private String username;
 
     public GameClient(String serverHostname, int port) {
@@ -23,9 +26,11 @@ public class GameClient {
 
     public void connect () {
         try {
+            // Trying to connect with the server
             Socket clientSocket = new Socket(serverHostname, port);
             Logger.getAnonymousLogger().log(Level.INFO, "Connected to the game server");
 
+            // Starting the client threads
             new ClientReadThread(clientSocket, this).start();
             new ClientWriteThread(clientSocket, this).start();
 
