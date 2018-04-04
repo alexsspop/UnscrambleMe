@@ -7,9 +7,14 @@ import java.io.InputStreamReader;
 import java.net.Socket;
 import java.net.SocketException;
 
+/**
+ * This class is responsible to wait messages sent by the server and show it to the client
+ */
 public class ClientReadThread extends Thread {
 
+    // The reference used to read messages sent by the server
     private BufferedReader reader;
+    // The socket reference used to retrieve the server printer and writer
     private Socket serverSocket;
     private GameClient gameClient;
 
@@ -30,6 +35,7 @@ public class ClientReadThread extends Thread {
     public void run() {
         while (true) {
             try {
+                // Wait for server messages
                 String response = reader.readLine();
                 if (response == null)
                     break;
