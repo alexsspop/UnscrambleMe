@@ -29,39 +29,35 @@ public class ClientWriteThread extends Thread {
 
     @Override
     public void run() {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-        System.out.print("Welcome! Enter your username: ");
-        String userName = null;
+
         try {
-            // Waiting for user to type a message
-            userName = reader.readLine();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        gameClient.setUsername(userName);
-        writer.println(userName);
+            BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+            Thread.sleep(1000);
 
-        String text = "";
+            System.out.print("Welcome! Enter your username: ");
+            String userName = reader.readLine();
 
-        do {
-            // TODO read client input options
-            System.out.print("[" + userName + "]: ");
-            try {
+            gameClient.setUsername(userName);
+            writer.println(userName);
+            Thread.sleep(1000);
+
+            String text;
+
+            do {
+                System.out.print("[" + userName + "]: ");
+
+                // TODO print options
                 text = reader.readLine();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            writer.println(text);
+                // TODO parse user input
 
-        } while (!text.equals("bye"));
+                writer.println(text);
 
-        try {
+            } while (!text.equals(""));
+
             serverSocket.close();
-        } catch (IOException ex) {
-
-            System.out.println("Error writing to server: " + ex.getMessage());
-        } finally {
-            System.out.println("\nThank you! See you soon ^-^");
+            System.out.println("Exiting...");
+        } catch (InterruptedException | IOException e) {
+            e.printStackTrace();
         }
     }
 }

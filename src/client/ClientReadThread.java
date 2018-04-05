@@ -14,12 +14,9 @@ public class ClientReadThread extends Thread {
 
     // The reference used to read messages sent by the server
     private BufferedReader reader;
-    // The socket reference used to retrieve the server printer and writer
-    private Socket serverSocket;
     private GameClient gameClient;
 
     public ClientReadThread (Socket serverSocket, GameClient client) {
-        this.serverSocket = serverSocket;
         this.gameClient = client;
 
         try {
@@ -42,14 +39,9 @@ public class ClientReadThread extends Thread {
                 System.out.println("\n" + response);
 
                 // prints the username after displaying the server's message
-                if (gameClient.getUserName() != null) {
+                if (gameClient.getUserName() != null)
                     System.out.print("[" + gameClient.getUserName() + "]: ");
-                }
-            } catch (SocketException ex) {
-                break;
             } catch (IOException ex) {
-                System.out.println("Error reading from server: " + ex.getMessage());
-                ex.printStackTrace();
                 break;
             }
         }
