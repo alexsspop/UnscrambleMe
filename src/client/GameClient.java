@@ -24,7 +24,7 @@ public class GameClient {
         this.port = port;
     }
 
-    public void connect () {
+    private void connect () {
         try {
             // Trying to connect with the server
             Socket clientSocket = new Socket(serverHostname, port);
@@ -41,11 +41,11 @@ public class GameClient {
         }
     }
 
-    public String getUserName() {
+    String getUserName() {
         return this.username;
     }
 
-    public void setUsername(String username) {
+    void setUsername(String username) {
         this.username = username;
     }
 

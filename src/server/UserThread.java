@@ -44,8 +44,15 @@ public class UserThread extends Thread {
                 // TODO parse client input options
                 // Waiting for client message
                 clientMessage = userReader.readLine();
+
                 if (clientMessage == null)
                     break;
+
+                if (clientMessage.equals("bye")) {
+                    System.err.println("DIGITOU BYE");
+                    break;
+                }
+
                 serverMessage = "[" + userName + "]: " + clientMessage;
                 // Broadcasting the received message
                 server.broadcast(serverMessage, this);
@@ -55,7 +62,7 @@ public class UserThread extends Thread {
             server.removeUser(userName, this);
             userSocket.close();
 
-            serverMessage = userName + " has quitted.";
+            serverMessage = userName + " has quited.";
             server.broadcast(serverMessage, this);
 
         } catch (IOException ex) {
@@ -68,12 +75,11 @@ public class UserThread extends Thread {
     /**
      * Sends a list of online users to the newly connected user.
      */
-    void printUsers() {
-        if (server.hasUsers()) {
+    private void printUsers() {
+        if (server.hasUsers())
             userWriter.println("Connected users: " + server.getUserNames());
-        } else {
+        else
             userWriter.println("No other users connected");
-        }
     }
 
     /**

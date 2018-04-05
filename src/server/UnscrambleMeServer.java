@@ -3,7 +3,9 @@ package server;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -15,39 +17,92 @@ public class UnscrambleMeServer {
     // Virtual port number
     private int port;
     // Set of connected users
-    private Set<String> userNames = new HashSet<>();
+    private Set<String> userNames;
     // Set of connected users threads
-    private Set<UserThread> userThreads = new HashSet<>();
+    private Set<UserThread> userThreads;
+    // The word to be unscrambled
+    private String magicWord;
+    // The shuffled word
+    private String shuffledWord;
+    // Boolean flag to shutdown the server
+    private boolean done;
 
-    public UnscrambleMeServer (int port) {
+    private UnscrambleMeServer (int port) {
         this.port = port;
+        this.done = false;
+        userNames = new HashSet<>();
+        userThreads = new HashSet<>();
+        this.generateWord();
     }
 
-    public void start () {
+    public String getMagicWord() {
+        return magicWord;
+    }
+
+    public String getShuffledWord() {
+        return shuffledWord;
+    }
+
+    private void generateWord () {
+        String[] words = {
+                "telefone",
+                "bicicleta",
+                "futebol",
+                "microondas",
+                "estabilidade"
+        };
+
+        this.magicWord = words[(int) (Math.random() * words.length)];
+        this.shuffledWord = shuffleWord(this.magicWord);
+    }
+
+    private String shuffleWord (String word) {
+        List<Character> characters = new ArrayList<>();
+        for (char c : word.toCharArray())
+            characters.add(c);
+        StringBuilder output = new StringBuilder(word.length());
+        while (characters.size() != 0) {
+            int randPicker = (int)(Math.random() * characters.size());
+            output.append(characters.remove(randPicker));
+        }
+        return output.toString();
+    }
+
+    private void start () {
         // Try to start the server
         try (ServerSocket serverSocket = new ServerSocket(port)) {
 
-            // Connection sucessfull
+            // Connection successful
             System.out.println("Game Server is listening on port " + port);
-            boolean done = true;
 
-            while (done) {
+            while (!this.done) {
                 // Wait for new connections
                 Socket socket = serverSocket.accept();
+                if (socket.isClosed())
+                    break;
                 Logger.getAnonymousLogger().log(Level.INFO, "New user connected");
 
                 UserThread newUser = new UserThread(socket, this);
                 userThreads.add(newUser);
                 newUser.start();
             }
-
-            System.out.println("\nDisconnecting...");
-
         } catch (IOException ex) {
             // Failed on starting the server
             System.out.println("Error in the server: " + ex.getMessage());
             ex.printStackTrace();
+        } catch (SecurityException ex) {
+            ex.printStackTrace();
         }
+
+        Logger.getAnonymousLogger().log(Level.INFO, "Exiting...");
+        this.shutdown();
+    }
+
+    void shutdown() {
+        for (UserThread userThread : userThreads) {
+            userThread.interrupt();
+        }
+        this.done = true;
     }
 
     /**
@@ -75,7 +130,7 @@ public class UnscrambleMeServer {
         boolean removed = userNames.remove(userName);
         if (removed) {
             userThreads.remove(aUser);
-            System.out.println("The user " + userName + " quitted");
+            System.out.println("The user " + userName + " quited");
         }
     }
 
